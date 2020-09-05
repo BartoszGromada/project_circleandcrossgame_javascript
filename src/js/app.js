@@ -2,7 +2,8 @@
 const select = {
   element: {
     square: '.square',
-    button: '.restart'
+    button: '.restart',
+    radio: 'input[type="radio"]'
   },
   atribute: {
     number: 'data-number',
@@ -17,10 +18,14 @@ const select = {
 
 const squers = document.querySelectorAll(select.element.square);
 const button = document.querySelector(select.element.button);
+const options = document.querySelectorAll(select.element.radio);
 
 let player = 1;
 let move = 1;
+let selectSquerNumber = 0;
+let fullElemArrayLength = 0;
 
+const fullElemArray = [1,2,3,4,5,6,7,8,9];
 const playerOneArray = [];
 const playerTwoArray = [];
 const winnerResults = [
@@ -52,20 +57,61 @@ squers.forEach(squer =>
         return player;
       }
       if (player == 2) {
-        clickedElement.classList.add(select.class.cross);
-        clickedElement.setAttribute(select.atribute.state, 'busy');
-        playerTwoArray.push(parseInt(number));
+        if (options[0].checked === true) {
+          fullElemArray.forEach(el => {
+            console.log('el: ', el);
+            console.log('playerOneArray: ', playerOneArray);
+            console.log('playerTwoArray: ', playerTwoArray);
+
+            const playerOneArrayWeryfication = playerOneArray.indexOf(el);
+            console.log('playerOneArrayWeryfication: ', playerOneArrayWeryfication);
+
+            const playerTwoArrayWeryfication = playerTwoArray.indexOf(el);
+            console.log('playerTwoArrayWeryfication:', playerTwoArrayWeryfication);
+
+            const position = fullElemArray.indexOf(el);
+            console.log('position: ', position);
+
+            if (playerOneArrayWeryfication > -1) {
+              fullElemArray.splice(position, 1);
+              console.log('fullElementArray: ',fullElemArray);
+            }
+
+            if (playerTwoArrayWeryfication > -1) {
+              fullElemArray.splice(position, 1);
+              console.log('fullElementArray: ',fullElemArray);
+            }
+          });
+          fullElemArrayLength = fullElemArray.length;
+          console.log('fullArrayLength: ', fullElemArrayLength);
+          const randomPosition = Math.floor(Math.random() * fullElemArrayLength);
+          console.log('randomPosition: ', randomPosition);
+          selectSquerNumber = fullElemArray[randomPosition];
+          console.log('selectNumber: ', selectSquerNumber);
+          const selectSquers = document.querySelector(select.element.square + '[data-number="' + selectSquerNumber + '"]');
+          console.log('selectSquers: ',selectSquers);
+          selectSquers.classList.add(select.class.cross);
+          selectSquers.setAttribute(select.atribute.state, 'busy');
+        }
+        if (options[1].checked === true) {
+          clickedElement.classList.add(select.class.cross);
+          clickedElement.setAttribute(select.atribute.state, 'busy');
+        }
+        else {
+          console.log('błąd: nieznana opcja trybu');
+        }
+        playerTwoArray.push(selectSquerNumber);
         resultWeryfication(playerTwoArray, player);
         player = 1;
         move++;
         return player;
-      } else {
+      } 
+      else {
         console.log('błąd: nieznany gracz');
-      }
-    } else {
-      console.log(
-        'komunikat: dla tego elemntu już klasa określająca zawartość - brak działania'
-      );
+      }     
+    } 
+    else {
+      console.log('komunikat: dla tego elemntu już klasa określająca zawartość - brak działania');
     }
   })
 );
@@ -109,9 +155,18 @@ button.addEventListener('click', () => {
 
     const playerOneLength = playerOneArray.length;
     const playerTwoLength = playerTwoArray.length;
+    let i = 0;
+    fullElemArrayLength = fullElemArray.length;
+
     playerOneArray.splice(0, playerOneLength);
     playerTwoArray.splice(0, playerTwoLength);
+    fullElemArray.splice(0,fullElemArrayLength);
+
+    for (i=1;i<10;i++) {
+      fullElemArray.push(i);
+    }
 
     move = 1;
+    player = 1;
   });
 });

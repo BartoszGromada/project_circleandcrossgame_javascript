@@ -5,14 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>GAME: CIRCLE & CROSS</title>
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
+  
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <header class="header">
       <p>GAME: CIRCLE & CROSS</p>
-
   </header>
 
   <section class ="game">
@@ -31,7 +30,11 @@
 
   <footer class="footer">
     <div id="result"></div>
-    <button class="RESTART">restart</button>
+    <form class="gameMode">
+      <input type="radio" name="player" value="SinglePlayer" class="radio" checked> Jeden Gracz
+      <input type="radio" name="player" value="MultiPlayer" class="radio"> Dwóch Graczy
+    </form>
+    <button class="restart">RESTART</button>
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.min.js"></script>
