@@ -1,0 +1,16 @@
+@mixin square_after() {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: block;
+  text-align: center;
+  font-size: 36px;
+}
+
+*,
+::after,
+::before {
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
