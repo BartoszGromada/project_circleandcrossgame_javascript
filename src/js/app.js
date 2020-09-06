@@ -1,60 +1,22 @@
 /* eslint-disable linebreak-style */
-const select = {
-  element: {
-    square: '.square',
-    button: '.restart',
-    radio: 'input[type="radio"]'
-  },
-  atribute: {
-    number: 'data-number',
-    state: 'data-state'
-  },
-  class: {
-    cross: 'cross',
-    circle: 'circle',
-    block: 'block'
-  }
-};
+import {select, varibles} from './settings.js';
 
 const squers = document.querySelectorAll(select.element.square);
 const button = document.querySelector(select.element.button);
 const options = document.querySelectorAll(select.element.radio);
 
-let player = 1;
-let move = 1;
-let selectSquerNumber = 0;
-let fullElemArrayLength = 0;
-let winnerMassege = 0; // 0 - not display(default), 1 - display
-
-const fullElemArray = [1,2,3,4,5,6,7,8,9];
-const playerOneArray = [];
-const playerTwoArray = [];
-const winnerResults = [
-  [1, 2, 3],
-  [4, 5, 6],
-  [7, 8, 9],
-  [1, 4, 7],
-  [2, 5, 8],
-  [3, 6, 9],
-  [1, 5, 9],
-  [7, 5, 3],
-];
-
 squers.forEach(squer =>
   squer.addEventListener('click', event => {
-    event.preventDefault();
     const clickedElement = event.target;
     const number = clickedElement.getAttribute(select.atribute.number);
     const state = clickedElement.getAttribute(select.atribute.state);
 
     if (state === 'free') {
-      if (player == 1) {
+      if (varibles.player == 1) {
         playerOne(clickedElement, number);
-        return console.log('ruch wykonany przez player: ',player);
       }
-      if (player == 2) {
+      else if (varibles.player == 2) {
         playerTwo(clickedElement);
-        return console.log('ruch wykonany przez player: ',player);
       }
       else {
         console.log('błąd: nieznany gracz');
@@ -70,80 +32,94 @@ const playerOne = (clickedElement, number) => {
   
   clickedElement.classList.add(select.class.circle);
   clickedElement.setAttribute(select.atribute.state, 'busy');
-  playerOneArray.push(parseInt(number));
-  resultWeryfication(playerOneArray, player);
-  player = 2;
-  move++;
+  select.array.playerOne.push(parseInt(number));
+  resultWeryfication(select.array.playerOne, varibles.player);
+
+  (varibles.winnerMessage === 1) ? console.log('end') : null ;
+
+  varibles.player = 2;
+  varibles.move++;
+
+  console.log('playerOneArray1: ', select.array.playerOne);
+  console.log('playerTwoArray1: ', select.array.playerTwo);
+  
 
   if (options[0].checked == true) {
     playerTwo(clickedElement);
-    player = 1;
+    varibles.player = 1;
   }
-  console.log('player after return:',player);
-  return player;
+
+  return varibles.player;
 };
 
 const playerTwo = (clickedElement) => {
+
   if (options[0].checked == true) {
-    fullElemArray.forEach(el => {
-      console.log('el: ', el);
-      console.log('playerOneArray: ', playerOneArray);
-      console.log('playerTwoArray: ', playerTwoArray);
+    select.array.fullElem.forEach(el => {
 
-      const playerOneArrayWeryfication = playerOneArray.indexOf(el);
-      console.log('playerOneArrayWeryfication: ', playerOneArrayWeryfication);
+      const position = select.array.fullElem.indexOf(el);
 
-      const playerTwoArrayWeryfication = playerTwoArray.indexOf(el);
-      console.log('playerTwoArrayWeryfication:', playerTwoArrayWeryfication);
+      (select.array.playerOne.indexOf(el) > -1) ? select.array.fullElem.splice(position, 1) : null ;
 
-      const position = fullElemArray.indexOf(el);
-      console.log('position: ', position);
-
-      if (playerOneArrayWeryfication > -1) {
-        fullElemArray.splice(position, 1);
-        console.log('fullElementArray: ',fullElemArray);
-      }
-
-      if (playerTwoArrayWeryfication > -1) {
-        fullElemArray.splice(position, 1);
-        console.log('fullElementArray: ',fullElemArray);
-      }
+      (select.array.playerTwo.indexOf(el) > -1) ? select.array.fullElem.splice(position, 1) : null ;
     });
-    fullElemArrayLength = fullElemArray.length;
-    console.log('fullArrayLength: ', fullElemArrayLength);
-    const randomPosition = Math.floor(Math.random() * fullElemArrayLength);
-    console.log('randomPosition: ', randomPosition);
-    selectSquerNumber = fullElemArray[randomPosition];
-    console.log('selectNumber: ', selectSquerNumber);
-    const selectSquers = document.querySelector(select.element.square + '[data-number="' + selectSquerNumber + '"]');
-    console.log('selectSquers: ',selectSquers);
+
+    varibles.fullElemLength = select.array.fullElem.length;
+    const randomPosition = Math.floor(Math.random() * varibles.fullElemLength);
+    varibles.selectSquerNumber = select.array.fullElem[randomPosition];
+    const selectSquers = document.querySelector(select.element.square + '[data-number="' + varibles.selectSquerNumber + '"]');
     selectSquers.classList.add(select.class.cross);
     selectSquers.setAttribute(select.atribute.state, 'busy');
   }
   else if (options[1].checked == true) {
+    if (varibles.move === 2) {
+      const middleSquer = document.querySelector(select.element.square + '[data-number="5"]');
+      const stateMiddleSquer = middleSquer.getAttribute(select.atribute.state);
+
+      (stateMiddleSquer === 'free') ? middleSquer.classList.add(select.class.cross) && middleSquer.setAttribute(select.atribute.state, 'busy') : console.log('pole zablokowane');
+    }
+    else if (varibles.move === 4) {
+
+    }
+    else if (varibles.move === 6) {
+
+    }
+    else if (varibles.move === 8) {
+
+    }
+    else {
+      console.log('błąd: bład algorytmu zaawansowanego')
+    }
+  }
+  else if (options[2].checked == true) {
     clickedElement.classList.add(select.class.cross);
     clickedElement.setAttribute(select.atribute.state, 'busy');
   }
   else {
     console.log('błąd: nieznana opcja trybu');
   }
-  playerTwoArray.push(selectSquerNumber);
-  resultWeryfication(playerTwoArray, player);
-  player = 1;
-  move++;
-  return player;
+  select.array.playerTwo.push(varibles.selectSquerNumber);
+  resultWeryfication(select.array.playerTwo, varibles.player);
+  varibles.player = 1;
+  varibles.move++;
+  console.log('playerOneArray2: ', select.array.playerOne);
+  console.log('playerTwoArray2: ', select.array.playerTwo);
+  return varibles.player;
 };
 
-const resultWeryfication = (Array, player) => {
-  const rund = move/2;
+const resultWeryfication = (array, player) => {
+  const rund = varibles.move/2;
 
-  winnerResults.forEach((winnerResult) => {
+  select.array.winnerResults.forEach((winnerResult) => {
+
     const weryfication = winnerResult.every(
-      (index) => Array.indexOf(index) > -1
+      (index) => array.indexOf(index) > -1
     );
 
-    if (weryfication === true) {
+    if (varibles.winnerMessage === 0 && weryfication === true) {
+
       const msg = 'Zwycieżył player ' + player + ' w ' + Math.ceil(rund)+ ' rundzie!';
+      
       squers.forEach(squer => {
         const state = squer.getAttribute(select.atribute.state);
         if (state === 'free') {
@@ -152,47 +128,48 @@ const resultWeryfication = (Array, player) => {
         }
       });
       printResult(msg);
-      winnerMassege = 1;
+      varibles.winnerMessage = 1;
     }
   });
-  console.log('winnerMassege: ', winnerMassege)
-  if(winnerMassege === 0 && move === 9) {
-    const msg = 'Nikt nie zwycieżył, mineło ' + move + ' ruchów, w ' + Math.ceil(rund)+ ' rundach.';
+
+  if(varibles.winnerMessage === 0 && varibles.move === 9) {
+    const msg = 'Nikt nie zwycieżył, mineło ' + varibles.move + ' ruchów, w ' + Math.ceil(rund)+ ' rundach.';
     printResult(msg);
   }
+  return varibles.winnerMessage;
 };
 
 const printResult = msg => {
   const div = document.createElement('div');
   div.innerHTML = msg;
-  document.getElementById('result').appendChild(div);
+  document.getElementById(select.id.result).appendChild(div);
 };
 
 button.addEventListener('click', () => {
-  document.getElementById('result').innerHTML = '';
+  document.getElementById(select.id.result).innerHTML = '';
 
   squers.forEach(squer => {
-    squer.classList.remove('circle');
-    squer.classList.remove('cross');
-    squer.classList.remove('block');
+    squer.classList.remove(select.class.circle);
+    squer.classList.remove(select.class.cross);
+    squer.classList.remove(select.class.block);
 
-    squer.setAttribute('data-state', 'free');
+    squer.setAttribute(select.atribute.state, 'free');
 
-    const playerOneLength = playerOneArray.length;
-    const playerTwoLength = playerTwoArray.length;
+    const playerOneLength = select.array.playerOne.length;
+    const playerTwoLength = select.array.playerTwo.length;
     let i = 0;
-    fullElemArrayLength = fullElemArray.length;
+    varibles.fullElemLength = select.array.fullElem.length;
 
-    playerOneArray.splice(0, playerOneLength);
-    playerTwoArray.splice(0, playerTwoLength);
-    fullElemArray.splice(0,fullElemArrayLength);
+    select.array.playerOne.splice(0, playerOneLength);
+    select.array.playerTwo.splice(0, playerTwoLength);
+    select.array.fullElem.splice(0,varibles.fullElemLength);
 
     for (i=1;i<10;i++) {
-      fullElemArray.push(i);
+      select.array.fullElem.push(i);
     }
 
-    move = 1;
-    player = 1;
-    winnerMassege = 0;
+    varibles.move = 1;
+    varibles.player = 1;
+    varibles.winnerMessage = 0;
   });
 });
